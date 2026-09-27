@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfa Institute - Self-Evaluation Test</title>
+    <style>
+        /* Base Reset & Variables */
+        :root {
+            --primary: #1e3a8a;
+            --primary-hover: #1e40af;
+            --secondary: #0f766e;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-bg: #dcfce7;
+            --success-border: #86efac;
+            --success-text: #166534;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
+        /* Disable Text Selection & Copying */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styling */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: #ffffff;
+            padding: 1.75rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+            color: #ffffff;
+        }
+
+        header h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #93c5fd;
+            margin-bottom: 0.5rem;
+        }
+
+        header h3 {
+            font-size: 0.95rem;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0f2fe;
+            font-weight: 600;
+        }
+
+        /* Main Container Layout */
+        .container {
+            max-width: 850px;
+            width: 92%;
+            margin: 2rem auto;
+            flex: 1;
+        }
+
+        /* Status & Progress Bar */
+        .quiz-header-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--secondary);
+            width: 1%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question Card */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            white-space: pre-line;
+        }
+
+        /* Options List */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #fff;
+        }
+
+        .option-label:hover {
+            border-color: #93c5fd;
+            background-color: #f0f9ff;
+        }
+
+        .option-label input[type="checkbox"] {
+            margin-top: 0.25rem;
+            margin-right: 0.85rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .option-content {
+            font-size: 1rem;
+            color: #334155;
+            flex: 1;
+        }
+
+        /* Selected State Styling */
+        .option-label.selected {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        /* Answer Feedback Box */
+        .answer-box {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1rem 1.25rem;
+            background-color: var(--success-bg);
+            border: 1px solid var(--success-border);
+            border-radius: 8px;
+            color: var(--success-text);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .answer-box.visible {
+            display: block;
+        }
+
+        .answer-box .title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .answer-box .details {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation Buttons */
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.75rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 0.65rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #cbd5e1;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-grid {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-grid:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* Question Grid Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            max-width: 650px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            gap: 0.5rem;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #f8fafc;
+            transition: all 0.15s ease;
+        }
+
+        .grid-item:hover {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        .grid-item.active {
+            border-color: var(--primary);
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .grid-item.answered {
+            background-color: #dcfce7;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .grid-item.answered.active {
+            background-color: #15803d;
+            border-color: #15803d;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.6rem; }
+            header h2 { font-size: 0.95rem; }
+            header h3 { font-size: 0.85rem; }
+            .card { padding: 1.25rem; }
+            .question-text { font-size: 1rem; }
+            .btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
+
+    <header>
+        <h1>Alfa Institute</h1>
+        <h2>Multiple Choice Questions Self-Evaluation Test</h2>
+        <h3>General Knowledge [Code-25ALFAGK002E QUIZ]</h3>
+    </header>
+
+    <div class="container">
+        <div class="quiz-header-status">
+            <span id="question-count">Question 1 of 100</span>
+            <button class="btn btn-grid" onclick="openGridModal()">📋 Question Index</button>
+        </div>
+
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="card">
+            <div class="question-text" id="question-text">Loading question...</div>
+
+            <div class="options-container" id="options-container">
+                <!-- Options rendered dynamically -->
+            </div>
+
+            <!-- Hidden Correct Answer Box -->
+            <div class="answer-box" id="answer-box">
+                <div class="title">
+                    <span>✓ Answer Revealed</span>
+                </div>
+                <div class="details" id="answer-text">
+                    <!-- Correct Answer Details -->
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()" disabled>
+                    ← Previous
+                </button>
+                <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">
+                    Next →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Palette Modal -->
+    <div class="modal" id="grid-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">Question Index (1 - 100)</span>
+                <button class="close-btn" onclick="closeGridModal()">&times;</button>
+            </div>
+            <div class="grid-container" id="grid-container">
+                <!-- 100 Grid Items generated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; Alfa Institute. All Rights Reserved. Copying or reproduction of test content is strictly prohibited.
+    </footer>
+
+    <script>
+        // Disable keyboard shortcuts for copying
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'u' || e.key === 'U' || e.key === 'a' || e.key === 'A' || e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+            }
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j'))) {
+                e.preventDefault();
+            }
+        });
+
+        // 100 Questions Data Bank
+        const questionsData = [
+            {
+                q: "1. After entering the human body through mosquito bite, the malarial parasite (plasmodium) shows initial multiplication in–",
+                options: ["(A) Spinal chord", "(B) Blood", "(C) Liver", "(D) Spleen"],
+                ans: "(C)"
+            },
+            {
+                q: "2. Which one among the following parts of blood carries out the function of body defence ?",
+                options: ["(A) Platelets", "(B) White Blood Cells", "(C) Haemoglobin", "(D) Red Blood Cells"],
+                ans: "(B)"
+            },
+            {
+                q: "3. Polio disease is caused by–",
+                options: ["(A) Bacteria", "(B) Fungi", "(C) Virus", "(D) Worm"],
+                ans: "(C)"
+            },
+            {
+                q: "4. Which one among the following is the hardest part of our body?",
+                options: ["(A) Skull bones of head", "(B) Thumb nails", "(C) Enamel of teeth", "(D) Spinal vertebra"],
+                ans: "(C)"
+            },
+            {
+                q: "5. Which of the following group is present in animal cells?",
+                options: [
+                    "(A) Mitochondria, Cell membrane, Cell wall, Cytoplasm",
+                    "(B) Chloroplasts, Cytoplasm, Vacuole, Nucleus",
+                    "(C) Nucleus, Cell membrane, Mitochondria, Cytoplasm",
+                    "(D) Vacuole, Cell membrane, Nucleus, Mitochondria"
+                ],
+                ans: "(C)"
+            },
+            {
+                q: "6. Corbett National Park is situated in which district of Uttaranchal ?",
+                options: ["(A) Chamoli", "(B) Nainital", "(C) Rishikesh", "(D) Garhwal"],
+                ans: "(B)"
+            },
+            {
+                q: "7. The hypothesis of ‘Coupling and Repulsion’ for linkage was formulated by—",
+                options: ["(A) Sutton and Boveri", "(B) Bateson & Punnet", "(C) T.H. Morgan", "(D) W. Sutton"],
+                ans: "(B)"
+            },
+            {
+                q: "8. Balanoglossus is commonly known as—",
+                options: ["(A) Earthworm", "(B) Tapeworm", "(C) Corn worm", "(D) Tongue worm"],
+                ans: "(D)"
+            },
+            {
+                q: "9. In Drosophila, sex determination depends on—",
+                options: ["(A) Y-chromosome", "(B) X-chromosome", "(C) Autosome", "(D) X-chromosome & autosome both"],
+                ans: "(D)"
+            },
+            {
+                q: "10. Nonsense codons are—",
+                options: ["(A) AUG, AAU, UAG", "(B) GGU, AGU, AUG", "(C) UAG, UAA, UGA", "(D) GAU, AAU, GUA"],
+                ans: "(C)"
+            },
+            {
+                q: "11. In which stage does centromere divide in two ?",
+                options: ["(A) Metaphase-I", "(B) Prophase-I", "(C) Metaphase-II", "(D) Anaphase-II"],
+                ans: "(D)"
+            },
+            {
+                q: "12. Which animal is egg laying mammal ?",
+                options: ["(A) Didelphys", "(B) Macropus", "(C) Pteropus", "(D) Tachyglossus"],
+                ans: "(D)"
+            },
+            {
+                q: "13. An oil producing gland on the tail of bird is known as—",
+                options: ["(A) Preen gland", "(B) Mucus gland", "(C) Green gland", "(D) Sebaceous gland"],
+                ans: "(A)"
+            },
+            {
+                q: "14. Which of the following pairs are correctly matched ?\nI. Pahariyas tribes -- Jharkhand\nII. Munda tribes -- Jharkhand\nIII. Bhil tribes -- Maharashtra\nIV. Ramosi tribes -- Maharastra & MP",
+                options: ["(A) I & II", "(B) I, II & III", "(C) II, III & IV", "(D) All are correct"],
+                ans: "(D)"
+            },
+            {
+                q: "15. A gland which is found on undersurface of the thighs of male lizard ?",
+                options: ["(A) Sudorific gland", "(B) Femoral gland", "(C) Green gland", "(D) Stink gland"],
+                ans: "(B)"
+            },
+            {
+                q: "16. Which of the following is not a path flagellate ?",
+                options: ["(A) Leishmania", "(B) Giardia", "(C) Trypanosoma", "(D) Noctiluca"],
+                ans: "(D)"
+            },
+            {
+                q: "17. The Glochidium larva of Unio—",
+                options: ["(A) Is free swimming", "(B) Is ectoparasite on fish", "(C) Is endoparasite on fish", "(D) Lives in bottom"],
+                ans: "(B)"
+            },
+            {
+                q: "18. The term ‘Plasmalemma’ was given by—",
+                options: ["(A) C. Nageli & C. Cramer", "(B) J.Q. Plowe", "(C) Dancilli & Davson", "(D) Robertson"],
+                ans: "(B)"
+            },
+            {
+                q: "19. Smooth endoplasmic reticulum performs—\n1. Synthesis of lipids\n2. Glycogenolysis\n3. Sterol metabolism\n4. Detoxification",
+                options: ["(A) Only 4 is correct", "(B) 1 and 2 both are correct", "(C) 2 and 3 both are correct", "(D) All are correct"],
+                ans: "(D)"
+            },
+            {
+                q: "20. The innermost layer of egg albumen in birds is called—",
+                options: ["(A) Inner thin albumen", "(B) Vitelline membrane", "(C) Dense alburmen", "(D) Chalaziferous layer"],
+                ans: "(B)"
+            },
+            {
+                q: "21. Which of the following inscriptions of the time of Kanishka indicates that his empire was extended upto Champa in the east ?",
+                options: ["(A) Sarnath Inscription", "(B) Saheth-Maheth inscription", "(C) Rabataka inscription", "(D) None of the above"],
+                ans: "(A)"
+            },
+            {
+                q: "22. Who captured the famous ‘silk route’ of central Asia ?",
+                options: ["(A) Ashoka", "(B) Kanishka", "(C) Menander", "(D) Harsha"],
+                ans: "(B)"
+            },
+            {
+                q: "23. Consider the following statements and select the correct answer from the code given below—\nAssertion (A) : Bacchanalian scenes are also found in Mathura art.\nReason (R) : The Mathura artists were aware of the Gandhara art tradition.",
+                options: [
+                    "(A) Both (A) and (R) are true and (R) is the correct explanation of (A)",
+                    "(B) Both (A) and (R) are ture, but (R) is not the correct explanation of (A)",
+                    "(C) (A) is true, but (R) is false",
+                    "(D) (A) is false, but (R) is true"
+                ],
+                ans: "(D)"
+            },
+            {
+                q: "24. What was the function of the officer known as ‘Gopa’ during the reign of Chandragupta Maurya ?",
+                options: [
+                    "(A) He was incharge of a Janapada",
+                    "(B) He was incharge of a group of villages",
+                    "(C) He was incharge of a Dronamukha",
+                    "(D) He was the president of a municipal board"
+                ],
+                ans: "(B)"
+            },
+            {
+                q: "25. Which of the following Mauryan pillars were surmounted by lion capital ?\n1. Koluha Pillar\n2. Lauriya Nandangarh Pillar\n3. Sanchi Pillar\n4. Sarnath Pillar",
+                options: ["(A) 1, 2, 3 and 4", "(B) 1, 2 and 3", "(C) 3 and 4", "(D) 2 and 3"],
+                ans: "(A)"
+            },
+            {
+                q: "26. In which year did the Mughal Emperor Aurangzeb die ?",
+                options: ["(A) 1707", "(B) 1701", "(C) 1705", "(D) 1703"],
+                ans: "(A)"
+            },
+            {
+                q: "27. What is the correct chronological sequence of the following ?\nI. Gandhi-Irwin Pact\nII. Nehru Report\nIII. Non-Cooperation Movement\nIV. Quit India Movement",
+                options: ["(A) III, IV, I, II", "(B) III, II, I, IV", "(C) II, III, IV, I", "(D) II, III, I, IV"],
+                ans: "(B)"
+            },
+            {
+                q: "28. What is the correct chronological sequence of the following persons in terms of their appointment in India by the British Government ?\nI. Lord Minto  II. Lord Reading\nIII. Lord Curzon  IV. Lord Irwin",
+                options: ["(A) II, III, I, IV", "(B) IV, I, III, II", "(C) I, III, II, IV", "(D) III, I, II, IV"],
+                ans: "(D)"
+            },
+            {
+                q: "29. Who was the first Governor-General of free India ?",
+                options: ["(A) Lord Mountbatten", "(B) C.Rajagopalachari", "(C) Pt.Jawaharlal Nehru", "(D) Babu Rajendra Prasad"],
+                ans: "(A)"
+            },
+            {
+                q: "30. Which of the following Vedas deals with magic spells and witchcraft?",
+                options: ["(A) Rigveda", "(B) Samaveda", "(C) Yajurveda", "(D) Atharvaveda"],
+                ans: "(D)"
+            },
+            {
+                q: "31. The later Vedic Age means the age of the compilation of",
+                options: ["(A) Samhitas", "(B) Brahmanas", "(C) Aranyakas", "(D) All the above"],
+                ans: "(D)"
+            },
+            {
+                q: "32. Where is the I.M.A. (Indian Military Academy) situated?",
+                options: ["(A) Dehradun", "(B) Pithoragarh", "(C) Udham Singh Nagar", "(D) Almora"],
+                ans: "(A)"
+            },
+            {
+                q: "33. Where is Lal Bahadur Shastri Academy situated?",
+                options: ["(A) Dehradun", "(B) Mussoorie", "(C) Nainital", "(D) Almora"],
+                ans: "(B)"
+            },
+            {
+                q: "34. The Vedic religion along with its Later (Vedic) developments is actually known as",
+                options: ["(A) Hinduism", "(B) Brahmanism", "(C) Bhagavatism", "(D) Vedic Dharma"],
+                ans: "(B)"
+            },
+            {
+                q: "35. Chipko Movement is related with—",
+                options: ["(A) Forest conservation", "(B) Wild life conservation", "(C) Air conservation", "(D) Water conservation"],
+                ans: "(A)"
+            },
+            {
+                q: "36. The Vedic Aryans first settled in the region of",
+                options: ["(A) Central India", "(B) Gangetic Doab", "(C) Saptasindhu", "(D) Kashmir and Punjab"],
+                ans: "(C)"
+            },
+            {
+                q: "37. Which of the following contains the famous Gayatrimantra?",
+                options: ["(A) Rigveda", "(B) Samaveda", "(C) Kathopanishad", "(D) Aitareya Brahmana"],
+                ans: "(A)"
+            },
+            {
+                q: "38. The famous Gayatrimantra is addressed to",
+                options: ["(A) Indra", "(B) Varuna", "(C) Pashupati", "(D) Savita"],
+                ans: "(D)"
+            },
+            {
+                q: "39. Two highest gods in the Vedic religion were",
+                options: ["(A) Agni and Savitri", "(B) Vishnu and Mitra", "(C) Indra and Varuna", "(D) Surya and Pushan"],
+                ans: "(C)"
+            },
+            {
+                q: "40. Division of the Vedic society into four classes is mentioned in the",
+                options: ["(A) Yajurveda", "(B) Purusa-sukta of Rigveda", "(C) Upanishads", "(D) Shatapatha Brahmana"],
+                ans: "(B)"
+            },
+            {
+                q: "41. P and Q started a business investing Rs.85,000 and Rs.15,000 respectively. In what ratio the profit earned after 2 years will be divided between them ?",
+                options: ["(A) 3 : 4", "(B) 15 : 23", "(C) 17 : 23", "(D) 17 : 3"],
+                ans: "(D)"
+            },
+            {
+                q: "42. Kamal started a business investing Rs.9,000. After five months, Sameer joined with a capital of Rs.8,000. If at the end of the year, they earned a profit of Rs.6,970, then what will be the share of Sameer in the profit ?",
+                options: ["(A) Rs.1883.78", "(B) Rs.2380", "(C) Rs.3690", "(D) Rs.1913"],
+                ans: "(B)"
+            },
+            {
+                q: "43. If 4 (A’s capital) = 6 (B’s capital) = 10 (C’s capital). Then out of a profit of Rs.4,650, C will receive.",
+                options: ["(A) Rs.465", "(B) Rs.900", "(C) Rs.1550", "(D) Rs.2250"],
+                ans: "(B)"
+            },
+            {
+                q: "44. 36 men can complete a piece of work in 18 days. In how many days will 27 men can complete the same work ?",
+                options: ["(A) 12", "(B) 18", "(C) 22", "(D) 24"],
+                ans: "(D)"
+            },
+            {
+                q: "45. 12 men working 8 hours per day complete a piece of work in 10 days. How many men will be required to complete the same work in 8 days, working 15 hours a days ?",
+                options: ["(A) 4", "(B) 5", "(C) 6", "(D) 8"],
+                ans: "(D)"
+            },
+            {
+                q: "46. A rope makes 70 rounds of the circumference of a cyclinder whose radius of the base is 14 cm. How many times can it go round a cylinder with radius of 20 cm ?",
+                options: ["(A) 40", "(B) 49", "(C) 100", "(D) 120"],
+                ans: "(B)"
+            },
+            {
+                q: "47. If 3 men or 6 boys can do a piece of work in 10 days, working 7 hours a day; How many days will it take to complete a piece of work twice as large with 6 men and 2 boys working together for 8 hours a day ?",
+                options: ["(A) 6", "(B) 7 1/2", "(C) 8 1/2", "(D) 9"],
+                ans: "(B)"
+            },
+            {
+                q: "48. A can do a piece of work in 10 days and B can do the same work in 15 days. In how many days can they complete the work working together ?",
+                options: ["(A) 5", "(B) 6", "(C) 8", "(D) 9"],
+                ans: "(B)"
+            },
+            {
+                q: "49. A and B can do a work in 12 days, B and C in 15 days, C and A in 20 days. If A, B & C work together, they will complete the work in",
+                options: ["(A) 5", "(B) 7 5/6", "(C) 10", "(D) 15 2/3"],
+                ans: "(C)"
+            },
+            {
+                q: "50. Two pipes A and B can fill a tank in 15 minutes and 20 minutes respectively. Both the pipes are opened together but after 4 minutes, pipe A is turned off. What is the total time required to fill the tank ?",
+                options: ["(A) 10 minutes, 20 seconds", "(B) 11 minutes, 45 seconds", "(C) 12 minutes, 30 seconds", "(D) 14 minutes, 40 seconds"],
+                ans: "(D)"
+            },
+            {
+                q: "51. Consider the following statements–\nThe state government shall appoint a Finance Commission to review the financial position of the Panchayats and to make recommendations as to–\n1. the distribution between the state and Panchayats of the net proceeds of taxes, tolls and fees leviable by the states.\n2. the determination of the taxes, duties, tolls and fees which may be assigned to the Panchayats.\n3. the principles that will determine grant-in-aid to the Panchayats.\nWhich of the statements given above is/are correct ?",
+                options: ["(A) 1 only", "(B) 2 and 3 only", "(C) 1 and 3 only", "(D) 1, 2 and 3"],
+                ans: "(D)"
+            },
+            {
+                q: "52. Which one among the following monuments was earlier known as ‘All India War Memorial’ ?",
+                options: ["(A) Gateway of India", "(B) India Gate", "(C) Charminar", "(D) Lal Quila"],
+                ans: "(B)"
+            },
+            {
+                q: "53. Which of the following statements regarding the Preamble of the Constitution of India is/are correct?\n1. The Preamble is an integral part of the Constitution.\n2. The words ‘secular’ and ‘socialist’ have been a part of the Preamble since its inception.",
+                options: ["(A) 1 only", "(B) 2 only", "(C) Both 1 and 2", "(D) Neither 1 nor 2"],
+                ans: "(A)"
+            },
+            {
+                q: "54. Normally the Parliament can legislate on the subjects enumerated in–",
+                options: ["(A) the Union List", "(B) the Concurrent List", "(C) the State List", "(D) the Union as well as the Concurrent List"],
+                ans: "(D)"
+            },
+            {
+                q: "55. Which one among the following statements relating to the Home Rule movement is not correct ?",
+                options: [
+                    "(A) The movement, instead of going forward after its great advance in 1917, gradually declined in 1918",
+                    "(B) Annie Besant, ‘the leader of the movement did not oppose the entry of extremists",
+                    "(C) The movement became weaker and weaker because of the continuous differences of opinion among the nationalist leaders",
+                    "(D) The movement was again revived by Mahatma Gandhi"
+                ],
+                ans: "(D)"
+            },
+            {
+                q: "56. Why did Gandhiji go to Champaran ?",
+                options: [
+                    "(A) To launch a Saryagraha movement",
+                    "(B) To launch a non-cooperation movement",
+                    "(C) To enquire into the grievances of the indigo cultivators",
+                    "(D) To fight against the zamindars"
+                ],
+                ans: "(C)"
+            },
+            {
+                q: "57. Which one among the following was the fundamental cause of the first Carnatic War between the British and the French ?",
+                options: [
+                    "(A) Participation of the English and the French in the native politics of Karnataka",
+                    "(B) The ambition of Dupleix to drive out the English from the South",
+                    "(C) The trade rivalry between the English and the French",
+                    "(D) The war of Austrian succession because of which Britain and France became each other’s enemy in every part of the world"
+                ],
+                ans: "(D)"
+            },
+            {
+                q: "58. Which one among the following cities was the best producer of silk cloth under Gupta reign?",
+                options: ["(A) Pataliputra", "(B) Murshidabad", "(C) Ghazipur", "(D) Varanasi"],
+                ans: "(B)"
+            },
+            {
+                q: "59. Which one among the following is not correct about the cave paintings at Ajanta ?",
+                options: [
+                    "(A) Scenes have no dividing frame and blend into each other",
+                    "(B) Scenes are both religious and secular in nature",
+                    "(C) The influence of the Gandhara art is seen",
+                    "(D) Scenes mostly depict tales from Jatakas"
+                ],
+                ans: "(C)"
+            },
+            {
+                q: "60. Vice-President of India is elected by an electoral college consisting of–",
+                options: [
+                    "(A) members of both Houses of Parliament",
+                    "(B) members of Rajya Sabha only",
+                    "(C) elected members of both Houses of Parliament",
+                    "(D) elected members of Lok Sabha only"
+                ],
+                ans: "(A)"
+            },
+            {
+                q: "61. One litre of water is added to 5 litres of a 20% solution of alcohol in water. The strength of alcohol in the new solution is __",
+                options: ["(A) 16 2/3%", "(B) 15%", "(C) 20%", "(D) 16%"],
+                ans: "(A)"
+            },
+            {
+                q: "62. If the cost of 12 articles is equal to the selling price of 10 articles. The profit percent in the transaction is ___",
+                options: ["(A) 18", "(B) 16 2/3%", "(C) 20%", "(D) 25%"],
+                ans: "(C)"
+            },
+            {
+                q: "63. The difference between the present ages of P and Q is 8 years and the ratio of their ages is 2 : 3 respectively. What is P’s present age ?",
+                options: ["(A) 16 years", "(B) 24 years", "(C) 12 years", "(D) 30 years"],
+                ans: "(A)"
+            },
+            {
+                q: "64. Which disease is caused by deficiency of proteins in children ?",
+                options: ["(A) Marasmas", "(B) Pellagra", "(C) Beri-Beri", "(D) Rickets"],
+                ans: "(A)"
+            },
+            {
+                q: "65. Which Indian social activist is best known for her role in Narmada Bachao Andolan ?",
+                options: ["(A) Menaga Gandhi", "(B) Shantha Sinha", "(C) Kiran Bedi", "(D) Medha Patkar"],
+                ans: "(D)"
+            },
+            {
+                q: "66. Who is the first recipient of Rajiv Gandhi Khel Ratna Award (now rechristened as Major Dhyan Chand Khel Ratna Award) ?",
+                options: ["(A) Sachin Tendulkar", "(B) Vishwanathan Anand", "(C) Geet Sethi", "(D) Dhanraj Pillai"],
+                ans: "(B)"
+            },
+            {
+                q: "67. During the oxidation of acidified ferrous ammonium sulphate with dichromate solution",
+                options: [
+                    "(A) The oxidation number of chromium and iron changes from +6 to +3 and +3 to +2 respectively.",
+                    "(B) The oxidation number of chromium and iron changes from +3 to +6 and +3 to +2 respectively.",
+                    "(C) The oxidation number of chromium and iron changes from +6 to +3 and +2 to +3 respectively.",
+                    "(D) The oxidation number of chromium and iron changes from +2 to +3 and +6 to +3 respectively."
+                ],
+                ans: "(C)"
+            },
+            {
+                q: "68. Consider the following statements :\nAssertion (A) : Copper is mainly used in Electrical Engineering Industry.\nReason (R) : Copper has the property of high conductivity.",
+                options: [
+                    "(A) Both (A) and (R) are correct and (R) explains (A) correctly.",
+                    "(B) Both (A) and (R) are correct and (R) does not explains (A).",
+                    "(C) (A) is true but (R) is false.",
+                    "(D) (A) is false but (R) is true."
+                ],
+                ans: "(A)"
+            },
+            {
+                q: "69. Arrange the following plants in discending order based on their altitude.",
+                options: [
+                    "(A) Deodar, Junipers, Teak, Maple",
+                    "(B) Deodar, Junipers, Maple, Teak",
+                    "(C) Junipers, Teak, Deodar, Maple",
+                    "(D) Junipers, Deodar, Maple, Teak"
+                ],
+                ans: "(D)"
+            },
+            {
+                q: "70. Consider the following statements :\nAssertion (A) : Fundamental Duties do not have any legal sanction\nReason (R) : The Fundamental Duties cannot be enforced by courts.",
+                options: [
+                    "(A) Both (A) and (R) are correct and (R) explains (A) correctly.",
+                    "(B) Both (A) and (R) are correct and (R) does not explains (A).",
+                    "(C) (A) is true but (R) is false.",
+                    "(D) (A) is false but (R) is true."
+                ],
+                ans: "(A)"
+            },
+            {
+                q: "71. Consider the following statements :\n(a) The 73rd Constitutional Amendment Act inserts certain provisions into Part IX of the Constitution.\n(b) It empowers the State Legislature to make laws for the organization of Panchayats at Village level as well as at higher levels of a District.",
+                options: [
+                    "(A) Both (a) and (b) are true.",
+                    "(B) Both (a) and (b) are not true.",
+                    "(C) Only (a) is true",
+                    "(D) Only (b) is true"
+                ],
+                ans: "(D)"
+            },
+            {
+                q: "72. The first individual satyagrahi was",
+                options: ["(A) Gandhiji", "(B) Vinoba Bhave", "(C) Rajaji", "(D) M.A.Jinnah"],
+                ans: "(B)"
+            },
+            {
+                q: "73. Which of the following Congress Session was presided over by an Irish member Alfred Web ?",
+                options: ["(A) First Session 1885", "(B) Fourth Session 1888", "(C) Seventh Session 1891", "(D) Tenth Session 1894"],
+                ans: "(D)"
+            },
+            {
+                q: "74. The first editor of the paper “Bande Matram” was",
+                options: ["(A) Bankim Chandra Chatterjee", "(B) Sri Aurobindo Ghose", "(C) Rabindranath Tagore", "(D) Dr.Annie Besant"],
+                ans: "(B)"
+            },
+            {
+                q: "75. Divide Rs.680 among A, B and C so that A gets 3 times more than B and B gets 4 times more than C.",
+                options: ["(A) Rs.160, Rs.40, Rs.480", "(B) Rs.480, Rs.160, Rs.40", "(C) Rs.480, Rs.40, Rs.160", "(D) Rs.160, Rs.480, Rs.40"],
+                ans: "(B)"
+            },
+            {
+                q: "76. The length, breadth and height of a room are respectively 12 metres, 9 metres and 6 metres. How many cubic boxes are needed to fill the room if the side of each box is 1.5 metres ?",
+                options: ["(A) 1072", "(B) 648", "(C) 324", "(D) 192"],
+                ans: "(D)"
+            },
+            {
+                q: "77. Which is the Measurement Standards Laboratory of India ?",
+                options: [
+                    "(A) Indian Institute of Science",
+                    "(B) National Aero Space Laboratories",
+                    "(C) National Physical Laboratory",
+                    "(D) National Metallurgical Laboratory"
+                ],
+                ans: "(C)"
+            },
+            {
+                q: "78. Match List I with List II.\nList I (Rock Type) : (a) Rhyolite, (b) Conglomerate, (c) Slate, (d) Dolomite\nList II (Rock class) : (1) Calcareous Sedimentary, (2) Foliated Metamorphic, (3) Arenaceous Sedimentary, (4) Extrusive Igneous\nCodes : a b c d",
+                options: ["(A) 4 3 1 2", "(B) 1 2 4 3", "(C) 4 3 2 1", "(D) 3 2 1 4"],
+                ans: "(C)"
+            },
+            {
+                q: "79. Match List I with List II.\nList I : (a) Dutch East India Company, (b) British East India Company, (c) French East India Company, (d) Portuguese captured Goa\nList II : (1) 1600, (2) 1664, (3) 1510, (4) 1602\nCodes : a b c d",
+                options: ["(A) 2 1 4 3", "(B) 4 1 2 3", "(C) 3 4 2 1", "(D) 1 3 4 2"],
+                ans: "(B)"
+            },
+            {
+                q: "80. Consider the following statements :\nAssertion (A) : Indian Public Sector helped in the development of a sound industrial base.\nReason (R) : Public Sector is under State Information Appropriate policies and providing financial and other support has helped the Public Sector.",
+                options: [
+                    "(A) (A) is true but (R) is wrong.",
+                    "(B) Both (A) and (R) are true",
+                    "(C) (A) is wrong but (R) is true.",
+                    "(D) Both (A) and (R) are wrong"
+                ],
+                ans: "(B)"
+            },
+            {
+                q: "81. Which one of the following atomic power stations was completely indigenously built?",
+                options: ["(A) Kalpakkam", "(B) Narora", "(C) Rawat Bhata", "(D) Tarapore"],
+                ans: "(A)"
+            },
+            {
+                q: "82. Which places are connected by the Grand Trunk High Way?",
+                options: ["(A) Kolkata-Amritsar", "(B) Kolkata – Mumbai", "(C) Delhi – Mumbai", "(D) Delhi – Chennai"],
+                ans: "(A)"
+            },
+            {
+                q: "83. Which of the following Indian states have the largest reserves of lignite?",
+                options: ["(A) Tamil Nadu", "(B) Rajastan", "(C) Jammu and Kashmir", "(D) Gujarat"],
+                ans: "(A)"
+            },
+            {
+                q: "84. Which one of the following countries is the world’s largest producer of mica?",
+                options: ["(A) India", "(B) Russia", "(C) Indonesia", "(D) Philippines"],
+                ans: "(A)"
+            },
+            {
+                q: "85. Gujarat and Maharashtra were born out of the State of—",
+                options: ["(A) Bombay", "(B) Gujarat", "(C) Ahmedabad", "(D) Maharashtra"],
+                ans: "(A)"
+            },
+            {
+                q: "86. At which place does river Bhagirathi merge with Mandakini ?",
+                options: ["(A) Rudra Prayag", "(B) Tehri", "(C) Dev Prayag", "(D) Rishikesh"],
+                ans: "(C)"
+            },
+            {
+                q: "87. Where is the Jawahar Lal Nehru Mountaineering Institute '?",
+                options: ["(A) Dehradun", "(B) Uttar Kashi", "(C) Chamoli", "(D) Bageshwar"],
+                ans: "(C)"
+            },
+            {
+                q: "88. Where is the Tiffin Top situated?",
+                options: ["(A) Nainital", "(B) Bhimtal", "(C) Haldwani", "(D) Ranikhet"],
+                ans: "(A)"
+            },
+            {
+                q: "89. The capital of Katyuri King was—",
+                options: ["(A) Katyuri", "(B) Baijnath", "(C) Mussoorie", "(D) Almora"],
+                ans: "(B)"
+            },
+            {
+                q: "90. SEBI is a—",
+                options: ["(A) Statutory body", "(B) Advisory body", "(C) Constitutional body", "(D) Non-statutory body"],
+                ans: "(A)"
+            },
+            {
+                q: "91. The 2015 Paris Agreement on Climate Change aimed at reducing the global greenhouse gas emissions and global warming well below the level of ___",
+                options: ["(A) 1° C", "(B) 2° C", "(C) 5° C", "(D) 7° C"],
+                ans: "(B)"
+            },
+            {
+                q: "92. The countries are required to update their Nationally Determined Contributions (NDCs) under the Paris Agreement on Climate Change once in every ___",
+                options: ["(A) 3 years", "(B) 4 years", "(C) 5 years", "(D) 8 years"],
+                ans: "(C)"
+            },
+            {
+                q: "93. Which of the following statements about PM-KUSUM Scheme of Government of India is not correct ?\nI. PM-KUSUM is the abbreviation for Pradhan Mantri Kisan Urja Suraksha Evam Utthan Mahabhiyan (PM-KUSUM).\nII. The scheme provides financial assistance to farmers for installing solar pumps and power plants.\nIII. The scheme was launched in 2019 by the Ministry of Agriculture.",
+                options: ["(A) I and II are correct", "(B) II and III are correct", "(C) I and III are correct", "(D) All are correct"],
+                ans: "(A)"
+            },
+            {
+                q: "94. Which state/UT recently launched ‘Isai Kudil Scheme’ to enhance music and dance education in government schools?",
+                options: ["(A) Puducherry", "(B) Assam", "(C) Lakshadweep", "(D) Mizoram"],
+                ans: "(A)"
+            },
+            {
+                q: "95. What is ‘Ophiocordyceps unilateralis’, recently seen in news?",
+                options: ["(A) Bacteria", "(B) Fish", "(C) Virus", "(D) Fungus"],
+                ans: "(D)"
+            },
+            {
+                q: "96. Saora Tribe, primarily resides in which state?",
+                options: ["(A) Haryana", "(B) Bihar", "(C) Jharkhand", "(D) Odisha"],
+                ans: "(D)"
+            },
+            {
+                q: "97. Recently, how much fund has been approved for the Digital Agriculture Mission by the Union Cabinet of India?",
+                options: ["(A) Rs 500 Crore", "(B) Rs 2,500 Crore", "(C) Rs 2,817 Crore", "(D) Rs 1,500 Crore"],
+                ans: "(C)"
+            },
+            {
+                q: "98. Recently, where was the national-level workshop on the “Indian Ocean Biodiversity Information System (IndOBIS)” conducted?",
+                options: [
+                    "(A) National Institute of Oceanography, Goa",
+                    "(B) Indian National Centre for Ocean Information Services, Hyderabad",
+                    "(C) Centre for Marine Living Resources & Ecology (CMLRE), Kochi",
+                    "(D) Central Marine Fisheries Research Institute, Kochi"
+                ],
+                ans: "(C)"
+            },
+            {
+                q: "99. Recently, which ministry has launched the ‘Vishvasya-Blockchain Technology Stack’?",
+                options: [
+                    "(A) Ministry of Electronics and Information Technology",
+                    "(B) Ministry of New and Renewable Energy",
+                    "(C) Ministry of Urban Development",
+                    "(D) Ministry of Defence"
+                ],
+                ans: "(A)"
+            },
+            {
+                q: "100. Where was the first ‘International Solar Festival’ organized?",
+                options: ["(A) Jaipur", "(B) Bhopal", "(C) New Delhi", "(D) Lucknow"],
+                ans: "(C)"
+            }
+        ];
+
+        // State variables
+        let currentIndex = 0;
+        const userSelections = new Array(questionsData.length).fill(null);
+
+        // Elements
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const answerBoxEl = document.getElementById('answer-box');
+        const answerTextEl = document.getElementById('answer-text');
+        const questionCountEl = document.getElementById('question-count');
+        const progressFillEl = document.getElementById('progress-fill');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Render Current Question
+        function renderQuestion() {
+            const currentQ = questionsData[currentIndex];
+            
+            // Question Text
+            questionTextEl.textContent = currentQ.q;
+            
+            // Question Counter & Progress Bar
+            questionCountEl.textContent = `Question ${currentIndex + 1} of ${questionsData.length}`;
+            progressFillEl.style.width = `${((currentIndex + 1) / questionsData.length) * 100}%`;
+
+            // Options
+            optionsContainerEl.innerHTML = '';
+            const selectedOptIndex = userSelections[currentIndex];
+
+            currentQ.options.forEach((optText, optIdx) => {
+                const label = document.createElement('label');
+                label.className = `option-label ${selectedOptIndex === optIdx ? 'selected' : ''}`;
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = `question-${currentIndex}`;
+                checkbox.checked = selectedOptIndex === optIdx;
+
+                checkbox.addEventListener('change', () => {
+                    handleOptionSelect(optIdx);
+                });
+
+                const contentSpan = document.createElement('span');
+                contentSpan.className = 'option-content';
+                contentSpan.textContent = optText;
+
+                label.appendChild(checkbox);
+                label.appendChild(contentSpan);
+                optionsContainerEl.appendChild(label);
+            });
+
+            // Handle Answer Box Display
+            if (selectedOptIndex !== null) {
+                showAnswerBox();
+            } else {
+                hideAnswerBox();
+            }
+
+            // Button States
+            prevBtn.disabled = currentIndex === 0;
+            if (currentIndex === questionsData.length - 1) {
+                nextBtn.textContent = 'Finish ✓';
+            } else {
+                nextBtn.textContent = 'Next →';
+            }
+        }
+
+        // Handle Choice Selection
+        function handleOptionSelect(optIndex) {
+            if (userSelections[currentIndex] === optIndex) {
+                userSelections[currentIndex] = null;
+                hideAnswerBox();
+            } else {
+                userSelections[currentIndex] = optIndex;
+                showAnswerBox();
+            }
+            renderQuestion();
+        }
+
+        // Display Correct Answer Below Options
+        function showAnswerBox() {
+            const currentQ = questionsData[currentIndex];
+            const correctOptText = currentQ.options.find(opt => opt.startsWith(currentQ.ans)) || currentQ.ans;
+            answerTextEl.textContent = `Correct Answer: ${correctOptText}`;
+            answerBoxEl.classList.add('visible');
+        }
+
+        // Hide Answer Box
+        function hideAnswerBox() {
+            answerBoxEl.classList.remove('visible');
+        }
+
+        // Navigation Actions
+        function nextQuestion() {
+            if (currentIndex < questionsData.length - 1) {
+                currentIndex++;
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                alert("You have completed the 100 General Knowledge Self-Evaluation Test.");
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Grid Overview Modal Controls
+        function openGridModal() {
+            const gridContainer = document.getElementById('grid-container');
+            gridContainer.innerHTML = '';
+
+            for (let i = 0; i < questionsData.length; i++) {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+                if (i === currentIndex) gridItem.classList.add('active');
+                if (userSelections[i] !== null) gridItem.classList.add('answered');
+                
+                gridItem.textContent = i + 1;
+                gridItem.onclick = () => {
+                    currentIndex = i;
+                    renderQuestion();
+                    closeGridModal();
+                };
+                gridContainer.appendChild(gridItem);
+            }
+
+            document.getElementById('grid-modal').style.display = 'flex';
+        }
+
+        function closeGridModal() {
+            document.getElementById('grid-modal').style.display = 'none';
+        }
+
+        // Initialize Test
+        renderQuestion();
+    </script>
+</body>
+</html>
